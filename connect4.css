@@ -1,9 +1,18 @@
 /* game board table */
+body {
+  margin-top: 20vh;
+  background-color: wheat;
+}
+#game {
+  display: grid;
+  place-items: center;
+}
 
 #board td {
+  position: relative;
   width: 50px;
   height: 50px;
-  border: solid 1px #666;
+  border: solid 1.5px #666;
 }
 
 /* pieces are div within game table cells: draw as colored circles */
@@ -13,14 +22,24 @@
   margin: 5px;
   width: 80%;
   height: 80%;
+  border-radius: 5%;
 }
 
 /* TODO: make pieces red/blue,  depending on player 1/2 piece */
+.piece-blue {
+  background-color: blue;
+}
+.piece-red {
+  background-color: red;
+}
 
 /* column-top is table row of clickable areas for each column */
 
 #column-top td {
-  border: dashed 1px lightgray;
+  position: relative;
+  border: dashed 1.5px rgb(145, 144, 144);
+  width: 50px;
+  height: 50px;
 }
 
 #column-top td:hover {
