@@ -160,7 +160,7 @@ function checkForWin() {
   }
 
   // TODO: read and understand this code. Add comments to help you.
-
+  //This code iterates through HEIGHT and WIDTH of the board and making new arrays that will contain 4 cells in the row, horizontally, vertically, diagonally and first array that contains all matching cells will return true, what eventually will show an alert of which player won; (explanation is not my best feature hah)
   for (let y = 0; y < HEIGHT; y++) {
     for (let x = 0; x < WIDTH; x++) {
       let horizon = [
