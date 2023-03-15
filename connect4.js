@@ -17,10 +17,10 @@ const board = []; // array of rows, each row is array of cells  (board[y][x])
 
 function makeBoard() {
   // TODO: set "board" to empty HEIGHT x WIDTH matrix array
-  for (let i = 0; i < HEIGHT; i++) {
+  for (let i = 0; i <= HEIGHT; i++) {
     let row = [];
-    for (let j = 0; j < WIDTH; j++) {
-      row.push("");
+    for (let j = 0; j <= WIDTH; j++) {
+      row.push(null);
     }
     board.push(row);
   }
@@ -63,9 +63,12 @@ function makeHtmlBoard() {
 
 function findSpotForCol(x) {
   // TODO: write the real version of this, rather than always returning 0
-  let y = "";
-  if (x) {
-    return y;
+  for (let i = HEIGHT - 1; i >= 0; i--) {
+    const col = board[i];
+    console.log(col);
+    if (col[x] === null) {
+      return (col[x] = i);
+    }
   }
   return null;
 }
@@ -74,13 +77,18 @@ function findSpotForCol(x) {
 
 function placeInTable(y, x) {
   // TODO: make a div and insert into correct table cell
-
-  const piece = document.createElement("div");
-  piece.setAttribute("class", "piece");
-  const cell = document.querySelector(`#${y}-${x}`);
-  if (cell) {
-    cell.appendChild(piece);
-    return cell;
+  for (let col of board) {
+    let tile = document.getElementById(`${y}-${x}`);
+    if (col[tile] !== null && !tile.hasChildNodes()) {
+      let spot = document.getElementById(`${y}-${x}`);
+      let newDiv = document.createElement("div");
+      let piece = spot.appendChild(newDiv);
+      if (currPlayer === 1) {
+        piece.classList.add("piece", "piece-blue");
+      } else {
+        piece.classList.add("piece", "piece-red");
+      }
+    }
   }
 }
 
@@ -93,12 +101,9 @@ function endGame(msg) {
 
 /** handleClick: handle click of column top to play piece */
 function fullBoard() {
-  for (let i = 0; i < board.length; i++) {
-    for (let j = 0; j < board[i].length; j++) {
-      if (board[i][j] === null) {
-        return endGame(`There is no empty cell, restart the game`);
-      }
-    }
+  let full = board.every((row) => row.every((cell) => cell !== null));
+  if (full) {
+    return endGame("Board is full, restart the game!!!");
   }
 }
 
@@ -114,11 +119,8 @@ function handleClick(evt) {
 
   // place piece in board and add to HTML table
   // TODO: add line to update in-memory board
-  let currentCell = board[y - 1][x - 1];
-  if (currentCell === null) {
-    currentCell = currPlayer;
-    placeInTable(y, x);
-  }
+  placeInTable(y, x);
+
   // check for win
   if (checkForWin()) {
     return endGame(`Player ${currPlayer} won!`);
@@ -131,13 +133,9 @@ function handleClick(evt) {
   // switch players
   // TODO: switch currPlayer 1 <-> 2
   if (currPlayer === 1) {
-    currPlayer.classList.add("piece-red");
-    currPlayer.classList.remove("piece-blue");
     currPlayer = 2;
     return currPlayer;
   } else {
-    currPlayer.classList.add("piece-blue");
-    currPlayer.classList.remove("piece-");
     currPlayer = 1;
     return currPlayer;
   }
