@@ -64,10 +64,8 @@ function makeHtmlBoard() {
 function findSpotForCol(x) {
   // TODO: write the real version of this, rather than always returning 0
   for (let i = HEIGHT - 1; i >= 0; i--) {
-    const col = board[i];
-    console.log(col);
-    if (col[x] === null) {
-      return (col[x] = i);
+    if (!board[i][x]) {
+      return i;
     }
   }
   return null;
@@ -77,19 +75,15 @@ function findSpotForCol(x) {
 
 function placeInTable(y, x) {
   // TODO: make a div and insert into correct table cell
-  for (let col of board) {
-    let tile = document.getElementById(`${y}-${x}`);
-    if (col[tile] !== null && !tile.hasChildNodes()) {
-      let spot = document.getElementById(`${y}-${x}`);
-      let newDiv = document.createElement("div");
-      let piece = spot.appendChild(newDiv);
-      if (currPlayer === 1) {
-        piece.classList.add("piece", "piece-blue");
-      } else {
-        piece.classList.add("piece", "piece-red");
-      }
-    }
+  const piece = document.createElement("div");
+  piece.classList.add("piece");
+  if (currPlayer === 1) {
+    piece.classList.add("piece", "piece-blue");
+  } else {
+    piece.classList.add("piece", "piece-red");
   }
+  const spot = document.getElementById(`${y}-${x}`);
+  spot.appendChild(piece);
 }
 
 /** endGame: announce game end */
@@ -101,16 +95,23 @@ function endGame(msg) {
 
 /** handleClick: handle click of column top to play piece */
 function fullBoard() {
-  let full = board.every((row) => row.every((cell) => cell !== null));
+  let full = board.every((row) => row.every((cell) => cell));
   if (full) {
     return endGame("Board is full, restart the game!!!");
+  }
+}
+
+function switchPlayer() {
+  if (currPlayer === 1) {
+    currPlayer = 2;
+  } else {
+    currPlayer = 1;
   }
 }
 
 function handleClick(evt) {
   // get x from ID of clicked cell
   let x = +evt.target.id;
-
   // get next spot in column (if none, ignore click)
   let y = findSpotForCol(x);
   if (y === null) {
@@ -119,6 +120,7 @@ function handleClick(evt) {
 
   // place piece in board and add to HTML table
   // TODO: add line to update in-memory board
+  board[y][x] = currPlayer;
   placeInTable(y, x);
 
   // check for win
@@ -132,13 +134,7 @@ function handleClick(evt) {
 
   // switch players
   // TODO: switch currPlayer 1 <-> 2
-  if (currPlayer === 1) {
-    currPlayer = 2;
-    return currPlayer;
-  } else {
-    currPlayer = 1;
-    return currPlayer;
-  }
+  switchPlayer();
 }
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -161,8 +157,8 @@ function checkForWin() {
 
   // TODO: read and understand this code. Add comments to help you.
   //This code iterates through HEIGHT and WIDTH of the board and making new arrays that will contain 4 cells in the row, horizontally, vertically, diagonally and first array that contains all matching cells will return true, what eventually will show an alert of which player won; (explanation is not my best feature hah)
-  for (let y = 0; y < HEIGHT; y++) {
-    for (let x = 0; x < WIDTH; x++) {
+  for (let y = 0; y <= HEIGHT; y++) {
+    for (let x = 0; x <= WIDTH; x++) {
       let horizon = [
         [y, x],
         [y, x + 1],
